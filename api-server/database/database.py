@@ -1,10 +1,16 @@
+import schemas
 import sqlite3
+
+
+#variaveis c os nomes das tabelas
+TABLE_USER = ''
+TABLE_TO_DO = 'to_do_list_table'
 
 
 #função para criar uma tabela no banco
 def create_db_user():
     try:
-        conn = sqlite3.connect("contador.db")
+        conn = sqlite3.connect(TABLE_USER)
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -43,6 +49,20 @@ def get_total():
     conn.close()
     return linha[0]
 
+
+def verify_email_existance(email) -> bool:
+    conn = sqlite3.connect(TABLE_USER)
+    cursor = conn.cursor()
+    cursor.execute("SELECT email FROM TABLE_USER where email = ?", (email,))
+    linha = cursor.fetchone()
+    conn.close()
+    if linha:
+        return True
+    return False
+
+
+def get_user() -> schemas.UserLogged:
+    pass
 
 
 def create_tables():
