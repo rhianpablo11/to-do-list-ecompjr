@@ -1,4 +1,4 @@
-import schemas
+from database import schemas
 import sqlite3
 from datetime import date
 
@@ -106,6 +106,11 @@ def get_to_do_by_user(user_email: str) -> list:
     conn.close()
     
     return [{"task_id": t[0], "create_date": t[1], "description": t[2], "status": t[3]} for t in tarefas]
+
+
+def verify_id_to_exists(id_to_to: int) -> bool:
+    pass
+
 
 # Função para obter os dados do usuário logado (com base no email)
 def get_user(email: str) -> schemas.UserLogged:
