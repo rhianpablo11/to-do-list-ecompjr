@@ -29,3 +29,5 @@ def create_user(body: schemas.User, type_user:str):
     else:
         pass
     return True
+
+

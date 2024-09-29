@@ -65,6 +65,21 @@ def get_user() -> schemas.UserLogged:
     pass
 
 
+#inserir uma nova todo
+def insert_new_todo() -> schemas.To_do_list:
+    pass
+
+
+#alterar o status daquela todo
+def change_status_todo(status: str, to_do_id: int) -> schemas.To_do_list:
+    pass
+ 
+#pegar as todos daquele usuario
+def get_to_do_by_user(user_email: str) -> list:
+    pass
+
+
+
 def create_tables():
     create_db_user()
     return True

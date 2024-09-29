@@ -25,3 +25,5 @@ class UserLogged(BaseModel):
     nome: str
     sobrenome: str
     telephone: str
+    
+    
