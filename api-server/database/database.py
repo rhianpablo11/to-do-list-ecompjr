@@ -1,6 +1,8 @@
 import sqlite3
 
-def cria_db():
+
+#função para criar uma tabela no banco
+def create_db_user():
     try:
         conn = sqlite3.connect("contador.db")
         cursor = conn.cursor()
@@ -12,24 +14,11 @@ def cria_db():
             );
         """)
         conn.close()
-
-        incrementa(0)
     except Exception as e:
         print(e)
         
         
-def get_total():
-    conn = sqlite3.connect("contador.db")
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT total FROM contador WHERE id = 1;
-    """)
-    linha = cursor.fetchone()
-    conn.close()
-
-    return linha[0]
-
+#estilo de função para att os dados/inserir
 def incrementa(total):
     conn = sqlite3.connect("contador.db")
     cursor = conn.cursor()
@@ -40,3 +29,22 @@ def incrementa(total):
     """)
     conn.commit()
     conn.close()
+    
+
+#estilo de função para leitura dos dados
+def get_total():
+    conn = sqlite3.connect("contador.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT total FROM contador WHERE id = 1;
+    """)
+    linha = cursor.fetchone()
+    conn.close()
+    return linha[0]
+
+
+
+def create_tables():
+    create_db_user()
+    return True
