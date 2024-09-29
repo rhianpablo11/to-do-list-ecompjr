@@ -1,4 +1,4 @@
-import schemas
+from database import schemas
 import sqlite3
 
 
@@ -78,6 +78,9 @@ def change_status_todo(status: str, to_do_id: int) -> schemas.To_do_list:
 def get_to_do_by_user(user_email: str) -> list:
     pass
 
+
+def verify_id_to_exists(id_to_to: int) -> bool:
+    pass
 
 
 def create_tables():
