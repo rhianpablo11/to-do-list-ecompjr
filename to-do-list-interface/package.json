@@ -14,7 +14,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
-    "serve": "^14.2.1"
+    "serve": "^14.2.1",
+    "to-do-list-interface": "file:"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
