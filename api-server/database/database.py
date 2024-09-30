@@ -19,7 +19,8 @@ def create_tables():
             nome VARCHAR(100) NOT NULL,
             sobrenome VARCHAR(100) NOT NULL,
             password VARCHAR(255) NOT NULL,
-            telephone VARCHAR(20) NOT NULL
+            telephone VARCHAR(20) NOT NULL,
+            type_user VARCHAR(10) NOT NULL -- Pode ser 'admin' ou 'common'
         );
     """)
 
@@ -45,9 +46,9 @@ def insert_user(user: schemas.User):
 
     try:
         cursor.execute(f"""
-            INSERT INTO {TABLE_USER} (email, nome, sobrenome, password, telephone) 
-            VALUES (?, ?, ?, ?, ?);
-        """, (user.email, user.nome, user.sobrenome, user.password, user.telephone))
+            INSERT INTO {TABLE_USER} (email, nome, sobrenome, password, telephone, type_user) 
+            VALUES (?, ?, ?, ?, ?, ?);
+        """, (user.email, user.nome, user.sobrenome, user.password, user.telephone, user.type_user))
         conn.commit()
     except sqlite3.IntegrityError:
         print(f"User with email {user.email} already exists.")
@@ -66,13 +67,13 @@ def verify_email_existence(email: str) -> bool:
 # Função para inserir uma nova tarefa (to-do)
 def insert_new_todo(to_do: schemas.To_do_list):
     try:
-        conn = sqlite3.connect("to_do_list.db")
+        conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
 
         cursor.execute(f"""
-            INSERT INTO to_do_list (create_date, description, status, user_email)
+            INSERT INTO {TABLE_TO_DO} (create_date, description, status, user_id)
             VALUES (?, ?, ?, ?);
-        """, (to_do.create_date, to_do.description, to_do.status, to_do.users[0]))  # Presumindo que há pelo menos um usuário associado
+        """, (to_do.create_date, to_do.description, to_do.status, to_do.user_id))
 
         conn.commit()
         conn.close()
@@ -87,10 +88,10 @@ def change_status_todo(status: str, to_do_id: int) -> bool:
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
 
-        cursor.execute("""
-            UPDATE to_do_list_table 
+        cursor.execute(f"""
+            UPDATE {TABLE_TO_DO} 
             SET status = ?
-            WHERE id = ?
+            WHERE task_id = ?
         """, (status, to_do_id))
 
         conn.commit()
@@ -119,21 +120,19 @@ def get_to_do_by_user(user_email: str) -> list:
     return [{"task_id": t[0], "create_date": t[1], "description": t[2], "status": t[3]} for t in tarefas]
 
 
+# Função para verificar se um to-do com o ID fornecido existe
 def verify_id_to_exists(id_to_do: int) -> bool:
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT id FROM to_do_list_table WHERE id = ?
+    cursor.execute(f"""
+        SELECT task_id FROM {TABLE_TO_DO} WHERE task_id = ?
     """, (id_to_do,))
     
     result = cursor.fetchone()
     conn.close()
     
-    if result:
-        return True
-    return False
-
+    return result is not None
 
 
 # Função para obter os dados do usuário logado (com base no email)
@@ -142,7 +141,7 @@ def get_user(email: str) -> schemas.UserLogged:
     cursor = conn.cursor()
 
     cursor.execute(f"""
-        SELECT email, nome, sobrenome, telephone 
+        SELECT email, nome, sobrenome, telephone, type_user 
         FROM {TABLE_USER} 
         WHERE email = ?;
     """, (email,))
@@ -155,32 +154,37 @@ def get_user(email: str) -> schemas.UserLogged:
             email=linha[0], 
             nome=linha[1], 
             sobrenome=linha[2], 
-            telephone=linha[3]
+            telephone=linha[3],
+            type_user=linha[4]
         )
     return None
 
-#Função para obter as tarefas de acordo com o status que serve para auxiliar as rotas de listagem
+# Função para obter as tarefas de acordo com o status (auxiliar nas rotas de listagem)
 def get_to_dos_by_status(status: str) -> list:
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT * FROM to_do_list_table WHERE status = ?
+    cursor.execute(f"""
+        SELECT task_id, create_date, description, status 
+        FROM {TABLE_TO_DO} 
+        WHERE status = ?;
     """, (status,))
     
     todos = cursor.fetchall()
     conn.close()
-    return todos
+    return [{"task_id": t[0], "create_date": t[1], "description": t[2], "status": t[3]} for t in todos]
 
-#Função para obter as tarefas que não estão arquivadas quue serve para auxiliar as rotas de listagem
+# Função para obter as tarefas que não estão arquivadas
 def get_to_dos_not_archived() -> list:
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT * FROM to_do_list_table WHERE status != 'arquivada'
+    cursor.execute(f"""
+        SELECT task_id, create_date, description, status 
+        FROM {TABLE_TO_DO} 
+        WHERE status != 'arquivada';
     """)
     
     todos = cursor.fetchall()
     conn.close()
-    return todos
+    return [{"task_id": t[0], "create_date": t[1], "description": t[2], "status": t[3]} for t in todos]
