@@ -9,6 +9,7 @@ function CreateAccount(props){
     const [telephone, setTelephone] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [isAdmin, setIsAdmin] = useState(false)
     const [isErrror, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isShow, setIsShow] = useState(false)
@@ -18,7 +19,7 @@ function CreateAccount(props){
     useEffect(()=>{
         setIsShow(props.is_create_by_admin) 
     },[props.is_create_by_admin] )
-
+    
 
     const handlingClick = (event) =>{
         if(handleClick){
@@ -28,12 +29,20 @@ function CreateAccount(props){
             if(event.target.innerHTML == 'Salvar'){
                 saveAccountRequest()
             }else if(event.target.innerHTML == 'Cadastrar'){
+                let verifyCheckBox = document.getElementById('isAdminCheck');
+                if(verifyCheckBox.checked){
+                    setIsAdmin(true)
+                } else{
+                    setIsAdmin(false)
+                }
+                
                 createAccountRequest()
             }else{
                 setIsShow(false)
             }
         }
     }
+    
 
     const createAccountRequest = async () => {
         try{
@@ -166,6 +175,12 @@ function CreateAccount(props){
                                             type="password"
                                             required
                                             onChange={()=>setPassword(event.target.value)}
+                                            ></input>
+                                    <p  className="text-start ml-4">Admin:</p>
+                                    <input className="m-auto w-11/12 p-2  rounded-sm bg-opacity-25 bg-slate-200 text-white placeholder:text-white"
+                                            
+                                            type="checkbox"
+                                            id='isAdminCheck'
                                             ></input>
                                 </div>}
                         
