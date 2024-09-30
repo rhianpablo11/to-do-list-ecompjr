@@ -1,23 +1,25 @@
 import propsTypes from 'prop-types'
+import ToDoElement from './toDoElement'
 
 
 function  ToDoListElement(props){
 
     return(
         <>
-        <div>
-            To Do
-            <div>
+        <div className='text-white flex-row  justify-start'>
+            <h2 className='font-bold ml-8 flex text-2xl'>To Do:</h2>
+            <div className='overflow-y-auto h-96'>
                 <ul>
-                    {listToDos.map(toDo, index) =>(
+                    {props.listToDos.map((toDo, index) =>(
                         <li key={index}>
-                            <ToDoListElement  create_date={toDo.create_date}
+                            <ToDoElement  create_date={toDo.create_date}
                                               description={toDo.description}
                                               status={toDo.status}
                                                 />
                         </li>
-                    )}
+                    ))}
                 </ul>
+                
             </div>
         </div>
         </>
@@ -25,7 +27,7 @@ function  ToDoListElement(props){
 }
 
 ToDoListElement.propType = {
-    listToDos: PropTypes.array
+    listToDos: propsTypes.array
 }
 
 ToDoListElement.defaultProps = {
@@ -33,4 +35,4 @@ ToDoListElement.defaultProps = {
 }
 
 
-export default ToDoElement
+export default ToDoListElement
