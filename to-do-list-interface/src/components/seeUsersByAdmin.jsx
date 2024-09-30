@@ -5,14 +5,14 @@ import CreateAccount from './createAccount'
 
 function SeeUsersByAdmin(props){
     const [showModal, setShowModal] = useState(false)
-    const [handleClick, setHandleClick] = useState(false)
+    const [click, setClick] = useState(false)
 
     const handlingClick = () =>{
-        if(handleClick){
-            setHandleClick(false)
+        if(click){
+            setClick(false)
             setShowModal(false)
         } else{
-            setHandleClick(true)   
+            setClick(true)   
             setShowModal(true)
         }
     }
@@ -43,11 +43,7 @@ function SeeUsersByAdmin(props){
                             </li>
                         ))}
                     </ul>
-                    <UserListElement  nome={'user.nome'}
-                                                sobrenome={'user.sobrenome'}
-                                                email={'user.email'}
-                                                telephone={'user.telephone'}
-                                                    />
+                    
                 </div>
             </div>
             

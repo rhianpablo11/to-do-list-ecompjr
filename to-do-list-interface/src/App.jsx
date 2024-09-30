@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     element: <LoggedIndexPage />
   },
   {
-    path: '/:type_singin',
+    path: '/login',
     element: <LoginSignUpPage />
   },
   {

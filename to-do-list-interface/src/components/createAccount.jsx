@@ -111,19 +111,19 @@ function CreateAccount(props){
     if(isShow){
         return(
             <>  
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div className="text-white flex-row w-80 rounded-xl p-4 bg-slate-400" >
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 backdrop-blur-sm">
+                <div className="text-white flex-row w-80 rounded-xl p-4 bg-opacity-25 bg-slate-200 " >
                     <div className="flex justify-between">
                         <h1 className="w-full font-medium h-10 text-2xl">{props.is_edit ? 'Editar Conta' : 'Create account'}</h1>
                         <button 
                             onClick={handlingClick}
-                            className="bg-gray-500 p-2 rounded-md">
+                            className=" bg-opacity-25 bg-slate-200 p-2 rounded-md">
                             Fechar
                         </button>
                     </div>
                     <div  className="flex-row w-full">
                         <p className="text-start ml-4">Nome:</p>
-                        <input  className=" flex m-auto w-11/12 p-2  rounded-sm bg-gray-500 text-white"
+                        <input  className=" flex m-auto w-11/12 p-2  rounded-sm bg-opacity-25 bg-slate-200 text-white placeholder:text-white"
                                 value={nome}
                                 placeholder="Insira seu nome"
                                 type="text"
@@ -132,7 +132,7 @@ function CreateAccount(props){
                                 ></input>
                         
                         <p  className="text-start ml-4">Sobrenome:</p>
-                        <input  className=" flex m-auto w-11/12 p-2  rounded-sm bg-gray-500 text-white"
+                        <input  className=" flex m-auto w-11/12 p-2  rounded-sm bg-opacity-25 bg-slate-200 text-white placeholder:text-white"
                                 value={sobrenome}
                                 placeholder="Insira seu sobrenome"
                                 type="text"
@@ -141,7 +141,7 @@ function CreateAccount(props){
                                 ></input>
                         
                         <p  className="text-start ml-4">Telephone:</p>
-                        <input  className=" flex m-auto w-11/12 p-2  rounded-sm bg-gray-500 text-white"
+                        <input  className=" flex m-auto w-11/12 p-2  rounded-sm bg-opacity-25 bg-slate-200 text-white placeholder:text-white"
                                 value={telephone}
                                 placeholder="75 98765 - 4321"
                                 type="text"
@@ -150,7 +150,7 @@ function CreateAccount(props){
                                 ></input>
     
                         <p  className="text-start ml-4">Email:</p>
-                        <input className=" flex m-auto w-11/12 p-2  rounded-sm bg-gray-500 text-white"
+                        <input className=" flex m-auto w-11/12 p-2  rounded-sm bg-opacity-25 bg-slate-200 text-white placeholder:text-white"
                                 value={email}
                                 placeholder="Insira seu email"
                                 type="email"
@@ -160,7 +160,7 @@ function CreateAccount(props){
                         {props.is_edit ? null : 
                                 <div>
                                     <p  className="text-start ml-4">Senha:</p>
-                                    <input className=" flex m-auto w-11/12 p-2  rounded-sm bg-gray-500 text-white"
+                                    <input className=" flex m-auto w-11/12 p-2  rounded-sm bg-opacity-25 bg-slate-200 text-white placeholder:text-white"
                                             value={password}
                                             placeholder="Insira sua senha"
                                             type="password"
@@ -171,10 +171,10 @@ function CreateAccount(props){
                         
 
                         {props.is_edit ?                 
-                                    <button className=" m-auto p-2 flex justify-self-end bg-gray-800 px-3 py-2 rounded-md my-3"  onClick={handlingClick}>
+                                    <button className=" m-auto p-2 flex justify-self-end bg-opacity-25 bg-slate-200 px-3 py-2 rounded-md my-3"  onClick={handlingClick}>
                                         Salvar
                                     </button>:
-                                    <button className=" m-auto p-2 flex justify-self-end bg-gray-800 px-3 py-2 rounded-md my-3"  onClick={handlingClick}>
+                                    <button className=" m-auto p-2 flex justify-self-end  bg-opacity-25 bg-slate-200 px-3 py-2 rounded-md my-3"  onClick={handlingClick}>
                                         Cadastrar
                                     </button>}
                         
