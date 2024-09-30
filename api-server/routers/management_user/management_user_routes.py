@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends
-from database import schemas, database
+from fastapi import APIRouter, HTTPException, Depends, Header
+from database import schemas, database, security
 from security import hash_password, verify_password
 from jose import JWTError, jwt
 
@@ -25,12 +25,15 @@ def create_user(body: schemas.User, type_user: str):
 
     # Hash da senha para segurança
     hashed_password = hash_password(body.password)
-    
+    is_admin = False
+    if(type_user == 'admin'):
+        is_admin = True
+        
     # Armazenar no banco de dados
     new_user = {
         "email": body.email,
         "password": hashed_password,
-        "type_user": type_user
+        "is_admin": is_admin
     }
     
     database.create_user(new_user)
@@ -46,9 +49,32 @@ def login_user(body: schemas.User):
     if not verify_password(body.password, user['password']):
         raise HTTPException(status_code=401, detail="Senha incorreta")
     
-    access_token = create_access_token(data={"email": user['email'], "type_user": user['type_user']})
+    access_token = security.create_access_token(data={"email": user['email'], "type_user": user['type_user']})
     
     return schemas.UserLogged(email=user['email'], token=access_token)
+
+
+@router.get('/get-full-data')
+def get_full_data_user(authorization: str = Header(None)):
+    payload = security.decode_token(authorization)
+    if(payload == None):
+        raise HTTPException(status_code=403, detail="Token inválido ou expirado")
+    
+    user = database.get_user_by_email(payload['email'])
+    if(user == None):
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    access_token = security.create_access_token(data={"email": user['email'], "type_user": user['type_user']})
+
+    return {'user_infos': user,
+            'to_do': database.get_to_do_by_user(payload['email']),
+            'token': access_token}
+
+
+
+
+
+
 
 # Rota para gerenciamento de usuários
 @router.get('/manage-users', response_model=list[schemas.User])
@@ -65,8 +91,6 @@ def manage_users(token: str = Depends(database.oauth2_scheme)):
     
     users = database.get_all_users()
     return users
-
-
 
 # Rota para atualizar um usuário
 @router.put('/update/{user_id}', response_model=bool)
