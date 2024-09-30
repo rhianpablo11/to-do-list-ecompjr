@@ -137,7 +137,7 @@ def verify_id_to_exists(id_to_do: int) -> bool:
 
 
 # Função para obter os dados do usuário logado (com base no email)
-def get_user(email: str) -> schemas.UserLogged:
+def get_user_by_email(email: str) -> schemas.UserLogged:
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 

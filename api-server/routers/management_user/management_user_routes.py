@@ -66,6 +66,8 @@ def manage_users(token: str = Depends(database.oauth2_scheme)):
     users = database.get_all_users()
     return users
 
+
+
 # Rota para atualizar um usuário
 @router.put('/update/{user_id}', response_model=bool)
 def update_user(user_id: int, body: schemas.UserUpdate, token: str = Depends(database.oauth2_scheme)):
