@@ -119,7 +119,9 @@ def list_users(authorization: str = Header(None)):
     user = database.get_user_by_email(payload['email'])
     if(user == None):
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
-
+    
+    if(not user['is_admin']):
+        raise HTTPException(status_code=403, detail="Acesso invalido")
     
     
     users = database.get_all_users()
@@ -141,6 +143,8 @@ def delete_user(authorization: str = Header(None), user_id):
     if(user == None):
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
+    if(not user['is_admin']):
+        raise HTTPException(status_code=403, detail="Acesso invalido")
     
     
     if database.verify_user_exists(user_id):
@@ -164,7 +168,9 @@ def update_user(user_id: int, updated_user: schemas.UserUpdate, authorization: s
     user = database.get_user_by_email(payload['email'])
     if(user == None):
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
-
+    
+    if(not user['is_admin']):
+        raise HTTPException(status_code=403, detail="Acesso invalido")
     
     
     if database.verify_user_exists(user_id):

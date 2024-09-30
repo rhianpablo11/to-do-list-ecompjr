@@ -8,6 +8,7 @@ class User(BaseModel):
     sobrenome: str
     password: str
     telephone: str
+    is_admin: bool
     
 class Admin(User):
     is_admin: bool
@@ -28,5 +29,6 @@ class UserLogged(BaseModel):
     nome: str
     sobrenome: str
     telephone: str
+    is_admin: bool
     
     
