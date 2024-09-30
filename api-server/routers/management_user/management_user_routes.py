@@ -5,11 +5,11 @@ from jose import JWTError, jwt
 
 router = APIRouter(prefix='/user')
 
-# Secret key for JWT token generation (ensure to keep it secure)
+
 SECRET_KEY = "supersecretkey"
 ALGORITHM = "HS256"
 
-# Utility function to create a JWT token for authenticated users
+
 def create_access_token(data: dict):
     to_encode = data.copy()
     token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

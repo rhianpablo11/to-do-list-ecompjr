@@ -11,6 +11,9 @@ class User(BaseModel):
     
 class Admin(User):
     is_admin: bool
+
+class UserUpdate(BaseModel):
+    tipo_usuario: str  
     
     
 class To_do_list(BaseModel):
