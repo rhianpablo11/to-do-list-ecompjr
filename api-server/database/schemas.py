@@ -14,7 +14,6 @@ class Admin(User):
     
     
 class To_do_list(BaseModel):
-    create_date: date
     description: str
     status: str
     users: list

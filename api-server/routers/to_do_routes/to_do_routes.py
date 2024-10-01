@@ -1,10 +1,24 @@
-from fastapi import APIRouter, HTTPException
-from database import schemas, database
+from fastapi import APIRouter, HTTPException, Depends, Header
+from database import schemas, database, security
+from datetime import datetime
+from security import decode_token
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 router = APIRouter(prefix='/to-do')
 
 @router.post('/add')
-def add_new_to_do(to_do: schemas.To_do_list): 
+def add_new_to_do(to_do: schemas.To_do_list, authorization: str = Header(None)): 
+    payload = security.decode_token(authorization)
+    if(payload == None):
+        raise HTTPException(status_code=403, detail="Token inválido ou expirado")
+    
+    user = database.get_user_by_email(payload['email'])
+    if(user == None):
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    to_do['create_date'] =  datetime.now()
+    
+    
     if(database.insert_new_todo(to_do)):
         return 200
     else:
