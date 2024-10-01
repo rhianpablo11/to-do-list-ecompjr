@@ -1,4 +1,4 @@
-import schemas
+from database import schemas
 import sqlite3
 from datetime import date
 
@@ -20,7 +20,7 @@ def create_tables():
             sobrenome VARCHAR(100) NOT NULL,
             password VARCHAR(255) NOT NULL,
             telephone VARCHAR(20) NOT NULL,
-            type_user VARCHAR(10) NOT NULL -- Pode ser 'admin' ou 'common'
+            is_admin VARCHAR(10) NOT NULL -- Pode ser 'admin' ou 'common'
         );
     """)
 
@@ -46,12 +46,12 @@ def insert_user(user: schemas.User):
 
     try:
         cursor.execute(f"""
-            INSERT INTO {TABLE_USER} (email, nome, sobrenome, password, telephone, type_user) 
+            INSERT INTO {TABLE_USER} (email, nome, sobrenome, password, telephone, is_admin) 
             VALUES (?, ?, ?, ?, ?, ?);
-        """, (user.email, user.nome, user.sobrenome, user.password, user.telephone, user.type_user))
+        """, (user['email'], user['nome'], user['sobrenome'], user['password'], user['telephone'], user['is_admin']))
         conn.commit()
     except sqlite3.IntegrityError:
-        print(f"User with email {user.email} already exists.")
+        print(f"User with email {user['email']} already exists.")
     finally:
         conn.close()
 
@@ -73,7 +73,7 @@ def insert_new_todo(to_do: schemas.To_do_list):
         cursor.execute(f"""
             INSERT INTO {TABLE_TO_DO} (create_date, description, status, user_id)
             VALUES (?, ?, ?, ?);
-        """, (to_do.create_date, to_do.description, to_do.status, to_do.user_id))
+        """, (to_do.create_date, to_do.description, to_do.status, to_do.users))
 
         conn.commit()
         conn.close()
@@ -141,7 +141,7 @@ def get_user_by_email(email: str) -> schemas.UserLogged:
     cursor = conn.cursor()
 
     cursor.execute(f"""
-        SELECT email, nome, sobrenome, telephone, type_user 
+        SELECT email, nome, sobrenome, telephone, is_admin, password 
         FROM {TABLE_USER} 
         WHERE email = ?;
     """, (email,))
@@ -150,12 +150,13 @@ def get_user_by_email(email: str) -> schemas.UserLogged:
     conn.close()
 
     if linha:
-        return schemas.UserLogged(
+        return schemas.User(
             email=linha[0], 
             nome=linha[1], 
             sobrenome=linha[2], 
             telephone=linha[3],
-            type_user=linha[4]
+            is_admin=linha[4],
+            password=linha[5]
         )
     return None
 
