@@ -40,7 +40,19 @@ O projeto implementa funcionalidades-chave, como **registro de usuários, autent
 
 A interface do sistema foi desenhada utilizando **Figma**. Abaixo estão algumas das telas desenvolvidas:
 
+### Tela Principal
+![Tela de Login](https://github.com/rhianpablo11/to-do-list-ecompjr/raw/main/readme-images/home_todolist.png)
 
+### Tela de Listagem de tarefas
+![Tela de Gerenciamento de Tarefas](https://github.com/rhianpablo11/to-do-list-ecompjr/raw/main/readme-images/to-dolist.png)
+
+---
+
+## Diagrama de Classes
+
+O diagrama de classes a seguir descreve a estrutura de dados e relacionamentos principais do sistema, incluindo as entidades de usuários e tarefas.
+
+![Diagrama de Classes](https://github.com/rhianpablo11/to-do-list-ecompjr/raw/main/readme-images/diagrama.png)
 
 ---
 ## Esquema de Banco de Dados
