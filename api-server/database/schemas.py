@@ -1,5 +1,5 @@
 from pydantic.main import BaseModel
-from datetime import date
+from datetime import date, datetime
 
 
 class User(BaseModel):
@@ -20,7 +20,8 @@ class UserUpdate(BaseModel):
 class To_do_list(BaseModel):
     description: str
     status: str
-    users: list
+    users: str
+    create_date: date
     
 
 class UserLogged(BaseModel):
@@ -31,3 +32,6 @@ class UserLogged(BaseModel):
     is_admin: bool
     
     
+class UserLogin(BaseModel):
+    email: str
+    password: str
