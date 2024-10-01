@@ -40,7 +40,7 @@ def create_user(body: schemas.User, type_user: str):
     }
     
     database.insert_user(new_user)
-    return True
+    return {'token': security.create_access_token(data={"email": body.email, "is_admin": user.is_admin})}
 
 @router.post('/login')
 def login_user(body: schemas.UserLogin):
