@@ -11,7 +11,7 @@ function Login(){
 
     const loginRequest = async () => {
         try{
-            const urlCommunicate = 'http://localhost:8000'+''
+            const urlCommunicate = 'http://localhost:8000'+'/user/login'
             setIsLoading(true)
             const response = await fetch(urlCommunicate, {
                 method: 'POST',

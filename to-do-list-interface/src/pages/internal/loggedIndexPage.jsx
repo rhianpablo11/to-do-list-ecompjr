@@ -8,35 +8,40 @@ import { save_cookie_token, get_token } from '../../utils/utils'
 
 function LoggedIndexPage(){
     const [toDoList, setToDoList] = useState([])
-    const [infoUser, setInfoUser] = useState({'nome':'Joao'})
+    const [infoUser, setInfoUser] = useState({'nome':'Joao', 'email': ''})
 
     const getDataUser = async () => {
         try{
-            const urlCommunicate = 'http://localhost:8000'+''
+            const urlCommunicate = 'http://localhost:8000'+'/user/get-full-data'
             const response = await fetch(urlCommunicate, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${get_token()}`
+                    'Authorization': `${get_token()}`
                 }
             })
-
+            
+            
             if(response.ok){
                 const responseJson = await response.json()
-                setToDoList(responseJson['toDoList'])
-                setInfoUser(responseJson['user'])
+                setToDoList(responseJson['to_do'])
+                console.log(toDoList)
+                setInfoUser(responseJson['user_infos'])
                 save_cookie_token(responseJson['token'])
             }
-        } catch(e){}   
-    }
+        } catch(e){
 
+        }   
+    }
+    
 
     useEffect(()=>{
        
         getDataUser()
+        
         const interval = setInterval(getDataUser, 2000)
         return () => clearInterval(interval)
     },[])
-
+    
 
 
     return(
@@ -51,7 +56,7 @@ function LoggedIndexPage(){
                     </div>
                     <div className="flex-row justify-start w-10/12">
                         <div className="flex h-30">
-                            <AddNewToDo />
+                            <AddNewToDo email={infoUser.email}/>
                             <OwnStatitiscs />
                         </div>
                         <div className="flex-row my-5 justify-start">

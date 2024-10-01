@@ -40,7 +40,7 @@ def create_user(body: schemas.User, type_user: str):
     }
     
     database.insert_user(new_user)
-    return {'token': security.create_access_token(data={"email": body.email, "is_admin": user.is_admin})}
+    return {'token': security.create_access_token(data={"email": body.email, "is_admin": is_admin})}
 
 @router.post('/login')
 def login_user(body: schemas.UserLogin):
@@ -80,7 +80,7 @@ def get_full_data_user(authorization: str = Header(None)):
     }
     
     return {'user_infos': user_copy,
-            'to_do': database.get_to_do_by_user(payload['email']),
+            'to_do': database.get_to_do_by_user(user.email),
             'token': access_token}
 
 

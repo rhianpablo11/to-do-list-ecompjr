@@ -10,11 +10,12 @@ function  ToDoListElement(props){
             <h2 className='font-bold ml-8 flex text-2xl'>To Do:</h2>
             <div className='overflow-y-auto h-96'>
                 <ul>
-                    {props.listToDos.map((toDo, index) =>(
+                    {props.listToDos.slice().reverse().map((toDo, index) =>(
                         <li key={index}>
                             <ToDoElement  create_date={toDo.create_date}
                                               description={toDo.description}
                                               status={toDo.status}
+                                              task_id={toDo.task_id}
                                                 />
                         </li>
                     ))}

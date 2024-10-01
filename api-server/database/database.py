@@ -110,7 +110,7 @@ def get_to_do_by_user(user_email: str) -> list:
     cursor.execute(f"""
         SELECT t.task_id, t.create_date, t.description, t.status
         FROM {TABLE_TO_DO} t
-        JOIN {TABLE_USER} u ON t.user_id = u.user_id
+        JOIN {TABLE_USER} u ON t.user_id = u.email
         WHERE u.email = ?;
     """, (user_email,))
     
@@ -141,7 +141,7 @@ def get_user_by_email(email: str) -> schemas.UserLogged:
     cursor = conn.cursor()
 
     cursor.execute(f"""
-        SELECT email, nome, sobrenome, telephone, is_admin, password 
+        SELECT email, nome, sobrenome, telephone, is_admin, password, user_id 
         FROM {TABLE_USER} 
         WHERE email = ?;
     """, (email,))
@@ -150,13 +150,14 @@ def get_user_by_email(email: str) -> schemas.UserLogged:
     conn.close()
 
     if linha:
-        return schemas.User(
+        return schemas.UserOut(
             email=linha[0], 
             nome=linha[1], 
             sobrenome=linha[2], 
             telephone=linha[3],
             is_admin=linha[4],
-            password=linha[5]
+            password=linha[5],
+            user_id=linha[6]
         )
     return None
 

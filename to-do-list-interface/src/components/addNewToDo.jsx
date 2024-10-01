@@ -1,8 +1,53 @@
 import { useState } from "react"
+import { get_token } from "../utils/utils"
+import propsTypes from 'prop-types'
 
 
-function AddNewToDo(){
+function AddNewToDo(props){
     const [descriptionToDo, setDescriptionToDo] = useState('')
+    const [isErrror, setIsError] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+
+
+    const addNewToDo = async () => {
+        try{
+            const currentDate = new Date()
+            const formattedDate = currentDate.getFullYear() + '-' + 
+                      String(currentDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(currentDate.getDate()).padStart(2, '0')
+            const urlCommunicate = 'http://localhost:8000'+'/to-do/add'
+            setIsLoading(true)
+            const response = await fetch(urlCommunicate, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${get_token()}`
+                },
+                body: JSON.stringify({
+                    "description": descriptionToDo,
+                    'status': 'Pendente',
+                    'users': props.email,
+                    'create_date': formattedDate
+
+                })
+            })
+
+            if(response.ok){
+                const responseJson = await response.json()
+                
+                setIsLoading(false)
+                
+            } else{
+                setIsLoading(false)
+                setIsError(true)
+            }
+        } catch(e){
+        setIsLoading(false)
+        setIsError(true)
+           
+        }   
+    }
+
 
     return (
         <>
@@ -21,7 +66,8 @@ function AddNewToDo(){
                 </textarea>
             </div>
             <div className="h-full">
-                <button className="bg-white text-black rounded-md px-5 my-3">
+                <button onClick={addNewToDo}
+                        className="bg-white text-black rounded-md px-5 my-3">
                     Adicionar
                 </button>
             </div>
@@ -30,5 +76,14 @@ function AddNewToDo(){
     )
 }
 
+AddNewToDo.propTypes = {
+    email: propsTypes.string,
+    
+}
+
+AddNewToDo.defaultProps = {
+    email: 'usuario@gmail.com'
+
+}
 
 export default AddNewToDo

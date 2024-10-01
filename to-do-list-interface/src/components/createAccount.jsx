@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate} from "react-router-dom"
-import { save_cookie_token } from '../utils/utils'
+import { get_token, save_cookie_token } from '../utils/utils'
 import propsTypes from 'prop-types'
 
 function CreateAccount(props){
@@ -14,6 +14,7 @@ function CreateAccount(props){
     const [isLoading, setIsLoading] = useState(false)
     const [isShow, setIsShow] = useState(false)
     const [handleClick, setHandleClick] = useState(false)
+    const [urlCommunicate, setUrlCommunicate] = useState('')
     const navigate = useNavigate()
     
     useEffect(()=>{
@@ -46,7 +47,12 @@ function CreateAccount(props){
 
     const createAccountRequest = async () => {
         try{
-            const urlCommunicate = 'http://localhost:8000'+''
+            if(isAdmin){
+                setUrlCommunicate('http://localhost:8000'+'/user/cadastro/admin')
+            } else{
+                setUrlCommunicate('http://localhost:8000'+'/user/cadastro/common')
+            }
+            
             setIsLoading(true)
             const response = await fetch(urlCommunicate, {
                 method: 'POST',
@@ -58,7 +64,8 @@ function CreateAccount(props){
                     "password": password,
                     'nome': nome,
                     'sobrenome': sobrenome,
-                    'telephone': telephone
+                    'telephone': telephone,
+                    "is_admin": isAdmin
                 })
             })
 
@@ -83,12 +90,13 @@ function CreateAccount(props){
 
     const saveAccountRequest = async () => {
         try{
-            const urlCommunicate = 'http://localhost:8000'+''
+            const urlCommunicate = 'http://localhost:8000'+'update/'+props.userID
             setIsLoading(true)
             const response = await fetch(urlCommunicate, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${get_token()}`
                 },
                 body: JSON.stringify({
                     "email": email,
@@ -100,7 +108,7 @@ function CreateAccount(props){
 
             if(response.ok){
                 const responseJson = await response.json()
-                save_cookie_token(responseJson['token'])
+                
                 setIsLoading(false)
                 setIsShow(false)
             } else{
@@ -206,13 +214,16 @@ function CreateAccount(props){
 
 CreateAccount.propTypes = {
     is_create_by_admin: propsTypes.bool,
-    is_edit: propsTypes.bool
+    is_edit: propsTypes.bool,
+    userID: propsTypes.number
     
 }
 
 CreateAccount.defaultProps = {
     is_create_by_admin: false,
-    is_edit: false
+    is_edit: false,
+    userID: 0
+
 }
 
 export default CreateAccount

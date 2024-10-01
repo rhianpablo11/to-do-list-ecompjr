@@ -10,6 +10,17 @@ class User(BaseModel):
     telephone: str
     is_admin: bool
     
+    
+class UserOut(BaseModel):
+    email: str
+    nome: str
+    sobrenome: str
+    password: str
+    telephone: str
+    is_admin: bool
+    user_id: int
+    
+    
 class Admin(User):
     is_admin: bool
 
