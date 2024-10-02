@@ -52,7 +52,7 @@ function CreateAccount(props){
             } else{
                 setUrlCommunicate('http://localhost:8000'+'/user/cadastro/common')
             }
-            
+            console.log('ioqhrwqhr   '+urlCommunicate)
             setIsLoading(true)
             const response = await fetch(urlCommunicate, {
                 method: 'POST',

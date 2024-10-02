@@ -190,3 +190,27 @@ def get_to_dos_not_archived() -> list:
     todos = cursor.fetchall()
     conn.close()
     return [{"task_id": t[0], "create_date": t[1], "description": t[2], "status": t[3]} for t in todos]
+
+
+def get_all_users() -> list:
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Selecionar todos os usuários no banco de dados
+    cursor.execute(f"""
+        SELECT email, nome, sobrenome, telephone, is_admin 
+        FROM {TABLE_USER};
+    """)
+
+    users = cursor.fetchall()
+    conn.close()
+
+    # Retornar os usuários com 'password' como 'null'
+    return [{
+        "email": user[0],
+        "nome": user[1],
+        "sobrenome": user[2],
+        "password": None,  # Password null
+        "telephone": user[3],
+        "is_admin": user[4]
+    } for user in users]

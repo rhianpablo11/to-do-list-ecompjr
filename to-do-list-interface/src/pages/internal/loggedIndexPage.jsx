@@ -52,7 +52,7 @@ function LoggedIndexPage(){
                 </div>
                 <div className="flex h-full">
                     <div className="w-2/12 h-full p-0 m-0 border-r " >
-                        <SideBar is_admin={true} />
+                        <SideBar is_admin={infoUser.is_admin} />
                     </div>
                     <div className="flex-row justify-start w-10/12">
                         <div className="flex h-30">

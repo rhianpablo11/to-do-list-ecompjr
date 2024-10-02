@@ -25,7 +25,7 @@ function SeeUsersByAdmin(props){
             const response = await fetch(urlCommunicate, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${get_token()}`
+                    'Authorization': `${get_token()}`
                 }
             })
 

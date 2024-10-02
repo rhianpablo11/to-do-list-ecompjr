@@ -15,7 +15,7 @@ def create_access_token(data: dict):
     token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
-@router.post('/cadastro/{type_user}', response_model=bool)
+@router.post('/cadastro/{type_user}')
 def create_user(body: schemas.User, type_user: str):
     if type_user not in ['admin', 'common']:
         raise HTTPException(status_code=406, detail="O cadastro desse tipo de pessoa não é aceito")
@@ -28,7 +28,7 @@ def create_user(body: schemas.User, type_user: str):
     is_admin = False
     if(type_user == 'admin'):
         is_admin = True
-        
+    
     # Armazenar no banco de dados
     new_user = {
         "email": body.email,
@@ -40,6 +40,7 @@ def create_user(body: schemas.User, type_user: str):
     }
     
     database.insert_user(new_user)
+    print("APAPAPAPAPF")
     return {'token': security.create_access_token(data={"email": body.email, "is_admin": is_admin})}
 
 @router.post('/login')
@@ -90,19 +91,21 @@ def get_full_data_user(authorization: str = Header(None)):
 
 
 # Rota para gerenciamento de usuários
-@router.get('/manage-users', response_model=list[schemas.User])
-def manage_users(token: str):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_type = payload.get('type_user')
-        
-        if user_type != 'admin':
-            raise HTTPException(status_code=403, detail="Acesso negado. Apenas administradores podem acessar essa rota.")
-    
-    except JWTError:
+@router.get('/manage-users')
+def manage_users(authorization: str = Header(None)):
+    payload = security.decode_token(authorization)
+    if(payload == None):
         raise HTTPException(status_code=403, detail="Token inválido ou expirado")
     
+    user = database.get_user_by_email(payload['email'])
+    if(user == None):
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    if( not user.is_admin):
+        raise HTTPException(status_code=403, detail="Acesso invalido")
+    
     users = database.get_all_users()
+    print('ajfahfiopahfophj')
     return users
 
 # Rota para atualizar um usuário

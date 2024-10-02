@@ -5,12 +5,42 @@ import propsTypes from 'prop-types'
 import { useState, useEffect} from "react"
 import { get_token } from "../../utils/utils"
 
-function ManageUsersByAdmin(props){
-    const [infoUser, setInfoUser] = useState({'nome':'Joao'})
-
+function ManageUsersByAdmin(){
     
+    const [infoUser, setInfoUser] = useState({'nome':'Joao', 'email': '', 'is_admin': false})
 
-    if(props.is_admin ){
+    const getDataUser = async () => {
+        try{
+            const urlCommunicate = 'http://localhost:8000'+'/user/get-full-data'
+            const response = await fetch(urlCommunicate, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `${get_token()}`
+                }
+            })
+            
+            
+            if(response.ok){
+                const responseJson = await response.json()
+                
+                console.log(responseJson)
+                setInfoUser(responseJson['user_infos'])
+                save_cookie_token(responseJson['token'])
+            }
+        } catch(e){
+
+        }   
+    }
+
+    useEffect(()=>{
+       
+        getDataUser()
+        
+        const interval = setInterval(getDataUser, 2000)
+        return () => clearInterval(interval)
+    },[])
+
+    if(infoUser.is_admin){
         return(
             <>
                 <div  className="h-screen">
