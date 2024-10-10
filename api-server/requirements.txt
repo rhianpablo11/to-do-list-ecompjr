@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+SQLAlchemy
+python-jose
+python-jwt
+bcrypt

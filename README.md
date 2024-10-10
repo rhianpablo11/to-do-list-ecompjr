@@ -7,6 +7,51 @@ Este projeto é um **Sistema de Gerenciamento de Tarefas (To-Do List)** desenvol
 
 O projeto implementa funcionalidades-chave, como **registro de usuários, autenticação**, gerenciamento de tarefas e diferenciação de papéis de usuários (administradores e usuários comuns). Administradores podem realizar tarefas adicionais, como gerenciamento de outros usuários, enquanto os usuários comuns podem criar, atualizar e arquivar suas próprias tarefas. O sistema também permite o **gerenciamento do status das tarefas** (por exemplo, pendente, concluída, arquivada).
 
+
+### Como executar o projeto
+
+
+### 1. Realizar o download do projeto 
+  O download pode ser feito via clone do repositório executando o seguinte comando no terminal:
+
+``` bash
+git clone https://github.com/rhianpablo11/distributed-banking-system-TEC502.git
+```
+
+### 2. Acesse a pasta do projeto no terminal
+
+### 3. Realize a instalação das dependencias
+#### 3.1 Dependencias do servidor
+Para realizar a instalação copie e cole o seguinte codigo no terminal
+``` bash
+pip install -r requirements.txt
+```
+#### 3.2 Dependencias da interface
+1. Acesse a pasta da interface
+``` bash
+cd to-do-list-interface/
+```
+2. Execute o seguinte comando para instalar os modulos
+``` bash
+npm install
+```
+
+### 4. Acesse a pasta "api-server"
+1. Execute o seguinte comando para iniciar o servidor
+``` bash
+uvicorn main:app
+```
+### 5. Inicie outra instacia do terminal
+1. Acesse a pasta do projeto
+2. Acesse a pasta da interface com  o comando abaixo
+``` bash
+cd to-do-list-interface/
+``` 
+1. Execute o seguinte comando para iniciar a interface
+``` bash
+npm run serve
+``` 
+
 ### Tecnologias Utilizadas
 
 - **Back-end**: FastAPI
@@ -32,8 +77,7 @@ O projeto implementa funcionalidades-chave, como **registro de usuários, autent
 
 3. **Funcionalidade Administrativa**:
    - **Verificação de Papel de Usuário**: Administradores podem gerenciar os papéis e permissões de outros usuários. Apenas administradores podem realizar tarefas relacionadas à gestão de usuários.
-   - **Gerenciamento de Tarefas pelos Administradores**: Administradores têm acesso a todas as tarefas do sistema, independentemente do dono da tarefa.
-   - **Listagem e Filtragem**: Administradores podem listar tarefas por diversos critérios, como por status ou por usuário.
+   
 
 ---
 ## Interface do Usuário
@@ -81,8 +125,8 @@ O diagrama de classes a seguir descreve a estrutura de dados e relacionamentos p
 
 ### **Rotas de Usuários**:
 
-- **`POST /users/register`**: Registra um novo usuário.
-    - Parâmetros: `email`, `password`, `nome`, `sobrenome`, `telephone`
+- **`POST /user/cadastro/common`**: Registra um novo usuário.
+    - Parâmetros: `email`, `password`, `nome`, `sobrenome`, `telephone`, `is_admin`
     - Exemplo:
       ```json
       {
@@ -90,12 +134,27 @@ O diagrama de classes a seguir descreve a estrutura de dados e relacionamentos p
         "password": "senhasegura",
         "nome": "João",
         "sobrenome": "Silva",
-        "telephone": "+551199999999"
+        "telephone": "+551199999999",
+        "is_admin": false
+      }
+      ```
+    - Resposta: `201 Created` em caso de sucesso.
+  - **`POST /user/cadastro/admin`**: Registra um novo administrador.
+    - Parâmetros: `email`, `password`, `nome`, `sobrenome`, `telephone`, `is_admin`
+    - Exemplo:
+      ```json
+      {
+        "email": "usuario@example.com",
+        "password": "senhasegura",
+        "nome": "João",
+        "sobrenome": "Silva",
+        "telephone": "+551199999999",
+        "is_admin": true
       }
       ```
     - Resposta: `201 Created` em caso de sucesso.
 
-- **`POST /users/login`**: Faz login do usuário e retorna um token JWT.
+- **`POST /user/login`**: Faz login do usuário e retorna um token JWT.
     - Parâmetros: `email`, `password`
     - Exemplo:
       ```json
@@ -106,7 +165,7 @@ O diagrama de classes a seguir descreve a estrutura de dados e relacionamentos p
       ```
     - Resposta: `200 OK` com token.
 
-- **`GET /users/me`**: Retorna os detalhes do usuário autenticado.
+- **`GET /users/get-full-data`**: Retorna os detalhes do usuário autenticado.
 
 ### **Rotas de Tarefas (To-Do)**:
 
@@ -130,9 +189,7 @@ O diagrama de classes a seguir descreve a estrutura de dados e relacionamentos p
     - Parâmetros na URL: `id_to_do`
     - Resposta: `200 OK` em caso de sucesso.
 
-- **`GET /to-do/list/arquivadas`**: Retorna todas as tarefas arquivadas.
 
-- **`GET /to-do/list/validas`**: Retorna todas as tarefas que não estão arquivadas.
 
 ---
 
@@ -142,40 +199,19 @@ Para suportar o **controle de acesso baseado em papéis (RBAC)**, administradore
 
 ### Rotas Exclusivas para Administradores:
 
-- **`GET /admin/users`**: Lista todos os usuários (somente administradores).
-- **`PATCH /admin/users/{user_id}/promote`**: Promove um usuário comum a administrador.
-    - Parâmetros: `user_id`
-    - Resposta: `200 OK` em caso de sucesso.
+- **`GET /user/manage-users`**: Lista todos os usuários.
 
-- **`DELETE /admin/users/{user_id}`**: Desativa a conta de um usuário (somente administradores).
 
 ### Verificação de Papel
 
-Para o gerenciamento de papéis, uma coluna especial `is_admin` é usada na tabela `users` para indicar se um usuário é administrador. A função `is_user_admin(email: str)` é utilizada para verificar se um usuário tem privilégios administrativos antes de acessar rotas protegidas.
-
-```python
-def is_user_admin(email: str) -> bool:
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-
-    cursor.execute(f"""
-        SELECT is_admin 
-        FROM users 
-        WHERE email = ?;
-    """, (email,))
-    
-    result = cursor.fetchone()
-    conn.close()
-
-    return result and result[0] == 1
-```
+Para o gerenciamento de papéis, uma coluna especial `is_admin` é usada na tabela `users` para indicar se um usuário é administrador. Esse atributo do usuario é utilizado pelo codigo presente na interface com o fim de liberar acesso a determinadas paginas, e funcionalidades. Para o caso do administrador, este pode acessar a pagina de gerenciamento de usuários em adição as funcionalidades do usuário comum.
 
 ---
 
 ## Segurança
 
 - **Hash de Senhas**: Todas as senhas dos usuários são criptografadas antes de serem armazenadas no banco de dados, garantindo uma autenticação segura.
-- **Autenticação JWT**: Todas as rotas que requerem autenticação utilizam tokens JWT para garantir uma gestão segura de sessões.
+- **Autenticação JWT**: Há algumas rotas que requerem autenticação utilizam tokens JWT para garantir uma gestão segura de sessões.
 - **Controle de Acesso Baseado em Papéis**: Rotas de administrador são protegidas por verificações que garantem que apenas usuários com o papel de administrador possam acessá-las.
 
 ---
@@ -185,6 +221,7 @@ def is_user_admin(email: str) -> bool:
 - **Atribuição de Tarefas**: Implementar a capacidade de atribuir tarefas a outros usuários.
 - **Notificações de Tarefas**: Notificar usuários sobre atualizações ou prazos de tarefas.
 - **Registro de Auditoria**: Manter um log das alterações feitas pelos administradores.
+- **Tarefas atribuidas a mais de um usuário**: Permitir que um usuário crie uma tarefa e atribua ela a outros usuários, para além dele.
 
 ---
 
