@@ -15,7 +15,7 @@ O projeto implementa funcionalidades-chave, como **registro de usuários, autent
   O download pode ser feito via clone do repositório executando o seguinte comando no terminal:
 
 ``` bash
-git clone https://github.com/rhianpablo11/distributed-banking-system-TEC502.git
+git clone https://github.com/rhianpablo11/to-do-list-ecompjr.git
 ```
 
 ### 2. Acesse a pasta do projeto no terminal
